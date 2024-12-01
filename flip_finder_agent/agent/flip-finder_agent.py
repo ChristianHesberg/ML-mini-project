@@ -8,12 +8,12 @@ def create_flip_finder_agent() -> ConversableAgent:
     print(LLM_CONFIG)
     # define the agent
     agent = ConversableAgent(
-        name="Flip Finder Agent",
+        name="Flip_Finder_Agent",
         system_message="You are a helpful AI assistant. "
                       "You can perform find safe and profitable flips on items in the MMORPG Old School Runescape. "
                       "You can find a list of items to check using the item-list tool. "
-                      "You can read item data using the api-reader tool. It will return the data in this format: { 'item_id': number, 'latest_trade': {'high': number, 'highTime': number, 'low': number, 'lowTime': number}, 'timeseries': [{'timestamp': number, 'avgHighPrice': number, 'avgLowPrice': number, 'highPriceVolume': number, 'lowPriceVolume': number}] }. "
-                      "You can calculate a safe and profitable flip using the flip-finder tool. It will expect data in the format given by the api-reader tool. It will return the data in this format: { 'item_id': number, 'safe': boolean, 'margin': number }. "
+                      "You can read item data using the api-reader tool. It will return the data in this format: { 'item_id': int, 'latest_trade': {'high': int, 'highTime': int, 'low': int, 'lowTime': int}, 'timeseries': [{'timestamp': int, 'avgHighPrice': int, 'avgLowPrice': int, 'highPriceVolume': int, 'lowPriceVolume': int}] }. "
+                      "You can calculate a safe and profitable flip using the flip-finder tool. It will expect data in the format given by the api-reader tool. It will return the data in this format: { 'item_id': int, 'safe': boolean, 'margin': int }. "
                       "Don't include any other text in your response. "
                       "Return 'TERMINATE' when the task is done.",
         llm_config=LLM_CONFIG,
@@ -47,7 +47,7 @@ def main():
         message="""
                 1. Read items from the item list, using the item_list tool.
                 2. For each item, fetch the data of the item using the api_reader tool.
-                3. Use the data for each item to determine whether the item is a safe and profitable flip using the flip_finder tool.
+                3. For each item, determine whether the item is a safe and profitable flip using the flip_finder tool.
                 4. Return the JSON object.
                 """
     )

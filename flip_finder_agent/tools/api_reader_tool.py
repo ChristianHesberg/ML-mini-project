@@ -1,4 +1,4 @@
-﻿from typing import Dict
+﻿from typing import Dict, Any
 
 import requests
 
@@ -18,15 +18,15 @@ def getItemById(id):
                               })
     return r.json()
 
-def getData(id: int) -> Dict[str, any]:
+def getData(id: int) -> Dict[str, Any]:
     timeseries = getTimeSeriesById(id)
     latest = getItemById(id)
     return {
         "item_id": id,
         "latest_trade": latest['data'][str(id)],
-        "timeseries": timeseries['data']
+        "timeseries": timeseries['data'][-50:]
     }
 
-##print(getData(13237))
+print(getData(13237))
 ##print(getTimeSeriesById(13237))
 ##print(getItemById(13237))

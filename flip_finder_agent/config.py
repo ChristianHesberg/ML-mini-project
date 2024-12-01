@@ -8,5 +8,5 @@ LLM_CONFIG = {
     "api_type": "azure",
     "api_key": os.getenv("GPT_API_KEY"),
     "base_url": os.getenv("GPT_ENDPOINT"),
-    "api_version": "2024-05-13"
+    "api_version": "2024-08-01-preview"
 }

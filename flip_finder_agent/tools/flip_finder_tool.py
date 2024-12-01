@@ -1,12 +1,12 @@
 ﻿from autogen import AssistantAgent
 from flip_finder_agent.config import LLM_CONFIG
 
-def find_flip(text: str):
+def find_flip(text: str) -> str:
     agent = AssistantAgent(
-        name="Flip Finder Agent",
+        name="Flip Finder Tool",
         system_message="You are a helpful AI assistant whose purpose is to determine whether an item is a safe and profitable flip in the MMORPG Old School Runescape. "
                       "You can analyze the data of recent trades to determine if a flip is safe and profitable. "
-                      "You will receive data in this format: { 'item_id': number, 'latest_trade': {'high': number, 'highTime': number, 'low': number, 'lowTime': number}, 'timeseries': [{'timestamp': number, 'avgHighPrice': number, 'avgLowPrice': number, 'highPriceVolume': number, 'lowPriceVolume': number}] }"
+                      "You will receive data in this format: { 'item_id': number, 'latest_trade': {'high': number, 'highTime': number, 'low': number, 'lowTime': number}, 'timeseries': [{'timestamp': number, 'avgHighPrice': number, 'avgLowPrice': number, 'highPriceVolume': number, 'lowPriceVolume': number}] }. "
                       "The given data consists of three parts: item_id, latest_trade, and timeseries. I will now define what the data in each individual part means. "
                       "The item_id is the id of the item. "
                       "The latest_trade is data pertaining to the most recent trade. latest_trade['high'] is the most recent high price. latest_trade['low'] is the most recent low price. latest_trade['hightime'] is the time that the high price trade was made. latest_trade['lowtime'] is the time that the low price trade was made. "
@@ -40,5 +40,7 @@ def find_flip(text: str):
             raise ValueError("No content found in the reply")
     else:
         reply_value = reply
+
+    print(f'the reply value in the flip finder tool is: {reply_value}')
 
     return reply_value

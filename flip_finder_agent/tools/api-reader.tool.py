@@ -16,5 +16,15 @@ def getItemById(id):
                               })
     return r.json()
 
-print(getTimeSeriesById(13237))
-print(getItemById(13237))
+def getData(id):
+    timeseries = getTimeSeriesById(id)
+    latest = getItemById(id)
+    return {
+        "item_id": id,
+        "latest_trade": latest['data'][str(id)],
+        "timeseries": timeseries['data']
+    }
+
+print(getData(13237))
+##print(getTimeSeriesById(13237))
+##print(getItemById(13237))

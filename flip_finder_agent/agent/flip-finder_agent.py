@@ -13,9 +13,15 @@ def create_flip_finder_agent() -> ConversableAgent:
         name="Flip_Finder_Agent",
         system_message="You are a helpful AI assistant. "
                       "You can perform find safe and profitable flips on items in the MMORPG Old School Runescape. "
-                      "You can find a list of items to check using the item-list tool. "
-                      "You can read item data using the api-reader tool. It will return the data in this format: { 'item_id': int, 'latest_trade': {'high': int, 'highTime': int, 'low': int, 'lowTime': int}, 'timeseries': [{'timestamp': int, 'avgHighPrice': int, 'avgLowPrice': int, 'highPriceVolume': int, 'lowPriceVolume': int}] }. "
-                      "You can calculate a safe and profitable flip using the flip-finder tool. It will expect data in the format given by the api-reader tool. It will return the data in this format: { 'item_id': int, 'safe': boolean, 'margin': int }. "
+                      "A flip is buying an item at a low price and selling it at a high price. "
+                      "You can find a list of items to check using the item_list tool. "
+                      "You can read item data using the api_reader tool. It will return the data in this format: { 'item_id': int, 'latest_trade': {'high': int, 'highTime': int, 'low': int, 'lowTime': int}, 'timeseries': [{'timestamp': int, 'avgHighPrice': int, 'avgLowPrice': int, 'highPriceVolume': int, 'lowPriceVolume': int}] }. "
+                      "You can use the 'latest_trade' dictionary received from the api to determine the trade margin on an item using the margin_calculator tool. "
+                      "You should only provide the latest_trade dictionary as the input parameter. Example: calculateMargin({'high': int, 'highTime': int, 'low': int, 'lowTime': int}). "
+                      "You can use the 'latest_trade' dictionary as well as the 'timeseries' list received from the api to determine if a flip is safe using the flip_finder tool. "
+                      "You should only provide the 'latest_trade' dictionary and 'timeseries' list as the input parameters. Example: findFlip({'high': int, 'highTime': int, 'low': int, 'lowTime': int}, [{'timestamp': int, 'avgHighPrice': int, 'avgLowPrice': int, 'highPriceVolume': int, 'lowPriceVolume': int}])."
+                      "After determining the trade margin and the safety of a flip, respond with in the following format: "
+                      "{ 'item_id': int, 'safe': boolean, 'margin': int, 'buy_price': int, 'sell_price': int }"
                       "Don't include any other text in your response. "
                       "Return 'TERMINATE' when the task is done.",
         llm_config=LLM_CONFIG,
@@ -38,6 +44,7 @@ def create_user_proxy():
     )
     user_proxy.register_for_execution(name="item_list")(item_list)
     user_proxy.register_for_execution(name="api_reader")(getData)
+    user_proxy.register_for_execution(name="margin_calculator")(calculateMargin)
     user_proxy.register_for_execution(name="flip_finder")(find_flip)
     return user_proxy
 
@@ -50,8 +57,15 @@ def main():
         message="""
                 1. Read items from the item list, using the item_list tool.
                 2. For each item, fetch the data of the item using the api_reader tool.
-                3. For each item, determine whether the item is a safe and profitable flip using the flip_finder tool.
-                4. Return the JSON object.
+                3. For each item, determine the margin of the item using the margin_calculator tool.
+                4. For each item, determine the safety of the item using the flip_finder tool.
+                5. Create a JSON object that contains the item id and the analyzed flip information.
+                Example:
+                [
+                    {"item_id": "1", "safe": false, "margin": 10000, "buy_price": 100000, "sell_price": 111000},
+                    {"item_id": "2", "safe": true, "margin": 20000, "buy_price": 200000, "sell_price": 222000},
+                ]
+                5. Return the JSON object.
                 """
     )
 

@@ -1,5 +1,5 @@
 ﻿from typing import Dict
-def calculateMargin(price_info: Dict[str, int]):
+def calculateMargin(price_info: Dict[str, int]) -> Dict[str, int]:
     high = price_info["high"]
     low = price_info["low"]
     margin = high - low - high * 0.01

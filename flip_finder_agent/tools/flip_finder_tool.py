@@ -1,36 +1,33 @@
-﻿from typing import Dict, Any
-
+﻿from typing import Union, Literal
 from autogen import AssistantAgent
+from flip_finder_agent.classes.trade_data import TradeData
 from flip_finder_agent.config import LLM_CONFIG
 
-def find_flip(text: Dict[str, Any]) -> str:
+RISK_VALUES = {"safe", "risky"}
+def find_flip(trade_data: TradeData) ->  Union[Literal["safe"], Literal["unsafe"]]:
     agent = AssistantAgent(
         name="Flip_Finder_Tool",
-        system_message="You are a helpful AI assistant whose purpose is to determine whether an item is a safe and profitable flip in the MMORPG Old School Runescape. "
-                      "You can analyze the data of recent trades to determine if a flip is safe and profitable. "
-                      "You will receive data in this format: { 'item_id': int, 'latest_trade': {'high': int, 'highTime': int, 'low': int, 'lowTime': int}, 'timeseries': [{'timestamp': int, 'avgHighPrice': int, 'avgLowPrice': int, 'highPriceVolume': int, 'lowPriceVolume': int}] }. "
-                      "The given data consists of three parts: item_id, latest_trade, and timeseries. I will now define what the data in each individual part means. "
-                      "The item_id is the id of the item. "
-                      "The latest_trade is data pertaining to the most recent trade. latest_trade['high'] is the most recent high price. latest_trade['low'] is the most recent low price. latest_trade['hightime'] is the time that the high price trade was made. latest_trade['lowtime'] is the time that the low price trade was made. "
-                      "The timeseries data is data pertaining to the trade data of an item during time intervals. It is an array of dictionaries. Each dictionary is data for a given time interval. "
-                      "A timeseries dictionary can be described as follows: timestamp is the start time of the interval. avgHighPrice is the average high price of trades made during the interval. avgLowPrice is the average low price of trades made during the interval. highPriceVolume is the amount of trades made as a high price trade. lowPriceVolume is the amount of trades made as a low price trade. "
-                      "The high price will be the price I am attempting to sell an item, and the low price will be the price I am attempting to buy an item. "
-                      "Given this data, you can use the flip-finder tool to determine whether the item is a safe and profitable flip. "
-                      "When determining whether a flip is profitable, keep in mind that when selling an item, I will be charged a 1% tax on the sale. So 1% of the high price should be removed from the margin. "
-                      "You will provide the result in the following format: { 'item_id': int, 'safe': boolean, 'margin': int }. "
-                      "Example result: { 'item_id': 1396, 'safe': true, 'margin': 45,000 }. "
-                      "Example of invalid result: 'item_id 1396 is a safe flip with a margin of 45,000'."
+        system_message="You are a helpful AI assistant. "
+                      "My goal is to make a profit buying items at a low price and selling them at a high price the MMORPG Old School Runescape. "
+                      "Your purpose is to determine if an item is a safe to trade based on the following factors: "
+                      "The current buying and selling price. The average buying and selling price for a given time interval. The volume of trades for a given time interval. "
+                      "The latest_trade data will be used to determine what price I will buy and sell an item at. "
+                      "The timeseries data should be used as context for how the item has been recently traded. "
+                      "I don't want to buy or sell items at outlier values. If the buy or sell price in the latest_trade data varies too much from the average buy and sell prices of trades in the timeseries data, I don't want to trade the item. "
+                      "You should not take into account the margin when determining the risk. "
+                      "You will provide the result in the following format: '[risk]'. "
+                      "Example result: safe "
+                      "Example of invalid result: 'the item is not a safe investment'."
                       "Don't include any other text in your response."
                       "Return 'TERMINATE' when the task is done.",
         llm_config=LLM_CONFIG,
     )
     reply = agent.generate_reply(
         messages=[
-            {"role": "user", "content": text}
+            {"role": "user", "content": f'analyze the safety of the flip using the latest_trade: {trade_data.latest_trade} and timeseries: {trade_data.timeseries}'}
         ],
     )
-    return reply["content"]
-'''
+
     if not reply:
         raise ValueError("No reply found")
 
@@ -44,6 +41,14 @@ def find_flip(text: Dict[str, Any]) -> str:
     else:
         reply_value = reply
 
-    print(f'the reply value in the flip finder tool is: {reply_value}')
-'''
+    reply_values = reply_value.splitlines()
+    if len(reply_values) != 1:
+        filtered_lines = list(filter(lambda x: RISK_VALUES.intersection(set(x.lower().split())), reply_values))
+        reply_value = filtered_lines[0] if filtered_lines else ""
 
+    reply_value = reply_value.replace("[", "").replace("]", "").replace(" ", "").strip()
+
+    if reply_value not in RISK_VALUES:
+        raise ValueError(f"Invalid risk value: {reply_value}")
+
+    return reply_value

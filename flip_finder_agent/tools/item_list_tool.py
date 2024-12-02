@@ -3,12 +3,12 @@
 
 def item_list() -> List[Dict[str, any]]:
     return [
-        {"name": "pegasian boots", "id": 13237},
+        #{"name": "pegasian boots", "id": 13237},
         #{"name": "primordial boots", "id": 13239},
-        #{"name": "basilisk jaw", "id": 24268},
+        {"name": "basilisk jaw", "id": 24268},
         #{"name": "dragon claws", "id": 13652},
-        #{"name": "armadyl crossbow", "id": 11785},
-        #{"name": "saradomin godsword", "id": 11806},
+        {"name": "armadyl crossbow", "id": 11785},
+        {"name": "saradomin godsword", "id": 11806},
         #{"name": "kodai wand", "id": 21006},
         #{"name": "ghrazi rapier", "id": 22324},
         #{"name": "osmumten's fang", "id": 26219},

@@ -1,4 +1,4 @@
-﻿from typing import List, Union, Literal
+﻿from typing import Union, Literal
 from autogen import AssistantAgent
 from flip_finder_agent.classes.trade_data import TradeData
 from flip_finder_agent.config import LLM_CONFIG
@@ -11,9 +11,10 @@ def find_flip(trade_data: TradeData) ->  Union[Literal["safe"], Literal["unsafe"
                       "My goal is to make a profit buying items at a low price and selling them at a high price the MMORPG Old School Runescape. "
                       "Your purpose is to determine if an item is a safe to trade based on the following factors: "
                       "The current buying and selling price. The average buying and selling price for a given time interval. The volume of trades for a given time interval. "
-                      ##"The latest_trade keys are defined as follows: 'high' is the sell price of the item. 'highTime' is a Unix timestamp indicating the last time the item was sold at the 'high' price. 'low' is the buy price of the item. 'lowTime' is a Unix timestamp indicating the last time the item was sold at the 'low' price. "
                       "The latest_trade data will be used to determine what price I will buy and sell an item at. "
                       "The timeseries data should be used as context for how the item has been recently traded. "
+                      "I don't want to buy or sell items at outlier values. If the buy or sell price in the latest_trade data varies too much from the average buy and sell prices of trades in the timeseries data, I don't want to trade the item. "
+                      "You should not take into account the margin when determining the risk. "
                       "You will provide the result in the following format: '[risk]'. "
                       "Example result: safe "
                       "Example of invalid result: 'the item is not a safe investment'."

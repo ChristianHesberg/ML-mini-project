@@ -3,6 +3,8 @@ from flip_finder_agent.config import LLM_CONFIG
 from flip_finder_agent.tools.item_list_tool import item_list
 from flip_finder_agent.tools.api_reader_tool import getData
 from flip_finder_agent.tools.flip_finder_tool import find_flip
+from flip_finder_agent.tools.margin_calculator_tool import calculateMargin
+
 
 def create_flip_finder_agent() -> ConversableAgent:
     print(LLM_CONFIG)
@@ -22,6 +24,7 @@ def create_flip_finder_agent() -> ConversableAgent:
     # add the tools to the agent
     agent.register_for_llm(name="item_list", description="Read item list")(item_list)
     agent.register_for_llm(name="api_reader", description="Read item data")(getData)
+    agent.register_for_llm(name="margin_calculator", description="Calculate margin on item")(calculateMargin)
     agent.register_for_llm(name="flip_finder", description="Find a safe and profitable flip")(find_flip)
 
     return agent

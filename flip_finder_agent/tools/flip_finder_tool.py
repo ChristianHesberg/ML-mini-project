@@ -3,7 +3,7 @@ from autogen import AssistantAgent
 from flip_finder_agent.classes.trade_data import TradeData
 from flip_finder_agent.config import LLM_CONFIG
 
-RISK_VALUES = {"safe", "unsafe"}
+RISK_VALUES = {"safe", "risky"}
 def find_flip(trade_data: TradeData) ->  Union[Literal["safe"], Literal["unsafe"]]:
     agent = AssistantAgent(
         name="Flip_Finder_Tool",
@@ -15,7 +15,7 @@ def find_flip(trade_data: TradeData) ->  Union[Literal["safe"], Literal["unsafe"
                       "The latest_trade data will be used to determine what price I will buy and sell an item at. "
                       "The timeseries data should be used as context for how the item has been recently traded. "
                       "You will provide the result in the following format: '[risk]'. "
-                      "Example result: 'safe'. "
+                      "Example result: safe "
                       "Example of invalid result: 'the item is not a safe investment'."
                       "Don't include any other text in your response."
                       "Return 'TERMINATE' when the task is done.",

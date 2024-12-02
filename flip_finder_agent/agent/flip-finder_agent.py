@@ -49,7 +49,7 @@ def main():
         message="""
                 1. Read items from the item list, using the item_list tool.
                 2. For each item, fetch the data of the item using the api_reader tool.
-                3. For each item, determine the risk of trading the item using the flip_finder tool.
+                3. For each item, determine the safety of trading the item using the flip_finder tool.
                 4. Create a JSON object that contains the item id and the analyzed flip information needed for making the trade.
                 Example:
                 [

@@ -26,7 +26,7 @@ def find_flip(latest_trade: Dict[str, int], timeseries: List[Dict[str, int]]) ->
     )
     reply = agent.generate_reply(
         messages=[
-            {"role": "user", "content": {latest_trade, timeseries}}
+            {"role": "user", "content": f'analyze the safety of the flip using the latest_trade and timeseries: {latest_trade, timeseries}'}
         ],
     )
 

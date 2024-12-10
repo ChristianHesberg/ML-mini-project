@@ -1,31 +1,29 @@
-﻿import asyncio
-import os
+﻿from autogen import ConversableAgent, filter_config
 
-import discord
-from autogen import ConversableAgent
-from dotenv import load_dotenv
-
-from flip_finder_agent.config import LLM_CONFIG
-from flip_finder_agent.tools.discord_bot_tool import send_flip
-from flip_finder_agent.tools.item_list_tool import item_list
+from flip_finder_agent.config import config_list
 from flip_finder_agent.tools.api_reader_tool import getData
+from flip_finder_agent.tools.discord_bot_tool import send_flip
 from flip_finder_agent.tools.flip_finder_tool import find_flip
+from flip_finder_agent.tools.item_list_tool import item_list
+
+filter_dict = {"tags": ["mistral", "local"]}
+config = filter_config(config_list, filter_dict)
+
 
 def create_flip_finder_agent() -> ConversableAgent:
-    print(LLM_CONFIG)
     # define the agent
     agent = ConversableAgent(
         name="Flip_Finder_Agent",
         system_message="You are a helpful AI assistant. "
-                      "My goal is to make a profit buying items at a low price and selling them at a high price the MMORPG Old School Runescape. "
-                      "You can find a list of items to check using the item_list tool. "
-                      "You can read data of an item using the api_reader tool. It will return a class TradeData that contains 'latest_trade' and 'timeseries' fields. "
-                      "The 'latest_trade' field is a LatestTrade class that contains information about the latest trade. "
-                      "The 'timeseries' field is a list of TimeInterval classes that contains trade information about the item for a time interval. "
-                      "Given a TradeData, you can analyze if an item is a safe trade using the flip_finder tool. "
-                      "Don't include any other text in your response. "
-                      "Return 'TERMINATE' when the task is done.",
-        llm_config=LLM_CONFIG,
+                       "My goal is to make a profit buying items at a low price and selling them at a high price the MMORPG Old School Runescape. "
+                       "You can find a list of items to check using the item_list tool. "
+                       "You can read data of an item using the api_reader tool. It will return a class TradeData that contains 'latest_trade' and 'timeseries' fields. "
+                       "The 'latest_trade' field is a LatestTrade class that contains information about the latest trade. "
+                       "The 'timeseries' field is a list of TimeInterval classes that contains trade information about the item for a time interval. "
+                       "Given a TradeData, you can analyze if an item is a safe trade using the flip_finder tool. "
+                       "Don't include any other text in your response. "
+                       "Return 'TERMINATE' when the task is done.",
+        llm_config={"config_list": config}
     )
 
     # add the tools to the agent
@@ -34,6 +32,7 @@ def create_flip_finder_agent() -> ConversableAgent:
     agent.register_for_llm(name="flip_finder", description="Analyze if a trade on an item is safe")(find_flip)
     agent.register_for_llm(name="discord_bot", description="Sends message to discord with flip")(send_flip)
     return agent
+
 
 def create_user_proxy():
     user_proxy = ConversableAgent(
@@ -68,6 +67,7 @@ def main():
                 6. Return the JSON object.
                 """
     )
+
 
 if __name__ == "__main__":
     main()

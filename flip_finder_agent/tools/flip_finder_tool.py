@@ -1,7 +1,7 @@
 ﻿from typing import Union, Literal
 from autogen import AssistantAgent
 from flip_finder_agent.classes.trade_data import TradeData
-from flip_finder_agent.config import LLM_CONFIG
+from flip_finder_agent.config import LLM_CONFIG_AZURE
 
 RISK_VALUES = {"safe", "risky"}
 def find_flip(trade_data: TradeData) ->  Union[Literal["safe"], Literal["unsafe"]]:
@@ -20,7 +20,7 @@ def find_flip(trade_data: TradeData) ->  Union[Literal["safe"], Literal["unsafe"
                       "Example of invalid result: 'the item is not a safe investment'."
                       "Don't include any other text in your response."
                       "Return 'TERMINATE' when the task is done.",
-        llm_config=LLM_CONFIG,
+        llm_config=LLM_CONFIG_AZURE,
     )
     reply = agent.generate_reply(
         messages=[

@@ -9,6 +9,7 @@ from flip_finder_agent.tools.item_list_tool import item_list
 filter_dict = {"tags": ["mistral", "local"]}
 config = filter_config(config_list, filter_dict)
 
+
 def create_flip_finder_agent() -> ConversableAgent:
     # define the agent
     agent = ConversableAgent(
@@ -49,9 +50,9 @@ def create_user_proxy():
 
 def main():
     user_proxy = create_user_proxy()
-    feedback_analysis_agent = create_flip_finder_agent()
+    flip_finder_agent = create_flip_finder_agent()
     user_proxy.initiate_chat(
-        feedback_analysis_agent,
+        flip_finder_agent,
         message="""
                 1. Read items from the item list, using the item_list tool.
                 2. For each item, fetch the data of the item using the api_reader tool.

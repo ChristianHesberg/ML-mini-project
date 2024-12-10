@@ -5,8 +5,14 @@ import requests
 from flip_finder_agent.classes.latest_trade import LatestTrade
 from flip_finder_agent.classes.time_interval import TimeInterval
 from flip_finder_agent.classes.trade_data import TradeData
-from flip_finder_agent.tools.margin_calculator_tool import calculateMargin
 
+
+def calculateMargin(latest_trade: LatestTrade) -> LatestTrade:
+    high = latest_trade.sell_price
+    low = latest_trade.buy_price
+    margin = high - low - high * 0.01
+    latest_trade.margin = round(margin)
+    return latest_trade
 
 def getTimeSeriesById(id: int) -> List[TimeInterval]:
     r = requests.get('https://prices.runescape.wiki/api/v1/osrs/timeseries?timestep=5m&id=' + str(id),

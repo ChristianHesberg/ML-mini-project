@@ -1,6 +1,4 @@
 ﻿from typing import List, Dict
-
-
 def item_list() -> List[Dict[str, any]]:
     return [
         #{"name": "pegasian boots", "id": 13237},

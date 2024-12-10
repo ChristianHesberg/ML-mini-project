@@ -9,7 +9,6 @@ from flip_finder_agent.tools.item_list_tool import item_list
 filter_dict = {"tags": ["mistral", "local"]}
 config = filter_config(config_list, filter_dict)
 
-
 def create_flip_finder_agent() -> ConversableAgent:
     # define the agent
     agent = ConversableAgent(

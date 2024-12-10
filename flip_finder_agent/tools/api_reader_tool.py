@@ -6,7 +6,6 @@ from flip_finder_agent.classes.latest_trade import LatestTrade
 from flip_finder_agent.classes.time_interval import TimeInterval
 from flip_finder_agent.classes.trade_data import TradeData
 
-
 def calculateMargin(latest_trade: LatestTrade) -> LatestTrade:
     high = latest_trade.sell_price
     low = latest_trade.buy_price
@@ -40,7 +39,3 @@ def getData(id: int) -> TradeData:
     timeseries = getTimeSeriesById(id)
     latest = getItemById(id)
     return TradeData(latest_trade=latest, timeseries=timeseries)
-
-##print(getData(13237))
-print(getTimeSeriesById(13237))
-print(getItemById(13237))
